@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    
+
+    <title>WebRunner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #0078d7;
+            color: #fff;
+            padding: 20px 10px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #0078d7;
+        }
+        ul {
+            list-style: disc;
+            margin-left: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #0078d7;
+            color: #fff;
+            position: relative;
+        }
+        .button-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        #detailed-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .column {
+            flex: 1 1 45%;
+            padding: 10px;
+        }
+        .icon-button {
+            font-size: 18px;
+        }
+    </style>
+    <script>
+        function showFeatures() {
+            const content = `
+<section style="column-count: 3;">
+    <h3 style="column-span: all;">Detailed Features</h3>
+    <ol>
+        <li><strong>Configuration Management</strong>:
+            <ul>
+                <li>Reads the predefined set of services and their configurations from a JSON file.</li>
+                <li>Future feature: Ability to receive configurations from an endpoint.</li>
+            </ul>
+        </li>
+        <li><strong>Dynamic Service Compilation</strong>:
+            <ul>
+                <li>Services are compiled (<code>go build</code>) before execution to ensure up-to-date binaries.</li>
+            </ul>
+        </li>
+        <li><strong>Service Metadata</strong>:
+            <ul>
+                <li>Each service is defined with attributes such as <code>Path</code>, <code>Port</code>, <code>Description</code>, and <code>BinaryName</code>.</li>
+                <li>Enables detailed service categorization, logging, and debugging.</li>
+            </ul>
+        </li>
+        <li><strong>Start/Stop Services</strong>:
+            <ul>
+                <li>Starts a predefined set of web services immediately upon execution.</li>
+                <li>Supports starting additional services and taking specific services down during runtime.</li>
+                <li>Stops all running services upon receiving a stop command.</li>
+            </ul>
+        </li>
+        <li><strong>Build-Time Configurations</strong>:
+            <ul>
+                <li>Allows service-specific environment variables to be set during the build process for better customization.</li>
+            </ul>
+        </li>
+        <li><strong>Logging</strong>:
+            <ul>
+                <li>Logs events such as services starting, stopping, and encountering errors.</li>
+                <li>Logging level (e.g., info, warnings, errors, debug) configurable as a startup parameter.</li>
+            </ul>
+        </li>
+        <li><strong>Command Interface</strong>:
+            <ul>
+                <li>Accepts commands (e.g., start, stop, add, remove) via HTTP endpoints.</li>
+            </ul>
+        </li>
+        <li><strong>Extensible Endpoint System</strong>:
+            <ul>
+                <li>Supports both text and JSON responses for API endpoints, allowing flexible additions and custom APIs.</li>
+                <li>Includes an endpoint (<code>/eps</code>) that dynamically lists all available commands and their descriptions.</li>
+            </ul>
+        </li>
+        <li><strong>Real-Time Feedback</strong>:
+            <ul>
+                <li>Provides a dashboard accessible via an endpoint to display the status of services.</li>
+                <li>Includes an endpoint (<code>/eps</code>) that lists all HTTP endpoints and their metadata.</li>
+            </ul>
+        </li>
+        <li><strong>Graceful Shutdown</strong>:
+            <ul>
+                <li>Implements a timeout mechanism for shutting down services cleanly.</li>
+                <li>Uses process group IDs for sending signals to entire groups of processes, ensuring clean termination.</li>
+            </ul>
+        </li>
+        <li><strong>Error Handling</strong>:
+            <ul>
+                <li>Logs and reports errors during service start or stop operations.</li>
+                <li>Future feature: Real-time error reporting via endpoints or dashboard.</li>
+            </ul>
+        </li>
+        <li><strong>Default Port Management</strong>:
+            <ul>
+                <li>Server uses the <code>SERVER_PORT</code> environment variable to set the port, with a fallback to <code>8080</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Service Cleanup</strong>:
+            <ul>
+                <li>Automatically cleans up binaries after service execution to minimize clutter in directories.</li>
+            </ul>
+        </li>
+        <li><strong>Custom Module Path Handling</strong>:
+            <ul>
+                <li>Configures <code>GOMODCACHE</code> and <code>GOPATH</code> paths dynamically, ensuring compatibility with custom environments.</li>
+            </ul>
+        </li>
+        <li><strong>Scalability</strong>:
+            <ul>
+                <li>Designed to manage approximately 10 services initially.</li>
+                <li>Scalable to handle up to 1000 services in the future.</li>
+            </ul>
+        </li>
+        <li><strong>Health Monitoring</strong>:
+            <ul>
+                <li>Future feature: Monitors service health and restarts crashed services.</li>
+            </ul>
+        </li>
+        <li><strong>Security</strong>:
+            <ul>
+                <li>Open access to endpoints for now.</li>
+                <li>Includes a stub for authentication and authorization to allow future expansion.</li>
+            </ul>
+        </li>
+    </ol>
+</section>
+                <div class="button-container">
+                    <button onclick="showHome()">🏠</button>
+                </div>
+            `;
+            document.querySelector('main').innerHTML = content;
+            document.querySelector('main').style.maxWidth = '1200px'; // Set max-width to 1200px
+        }
+
+        function showHome() {
+            const homeContent = `
+                <section>
+                    <h2>About WebRunner</h2>
+                    <p>WebRunner is a scalable and extensible tool for managing, monitoring, and dynamically controlling web services on a local machine.</p>
+                </section>
+                <section>
+                    <h2>Detailed Description</h2>
+                    <p>WebRunner is designed to simplify the management of web services by providing robust features such as dynamic service compilation, runtime control, real-time feedback, and graceful shutdown mechanisms. It reads service configurations from a JSON file, compiles services dynamically, and offers a dashboard for monitoring service status. Scalable to handle up to 1000 services, WebRunner is built for both immediate and future needs, with extensibility for secure access and health monitoring enhancements.</p>
+                </section>
+                <section>
+                    <h2>Key Features</h2>
+                    <ul>
+                        <li>Starts and stops predefined and dynamically added web services.</li>
+                        <li>Reads configurations from a JSON file for flexible setup.</li>
+                        <li>Dynamic service compilation ensures up-to-date binaries.</li>
+                        <li>Graceful shutdown with process group management.</li>
+                        <li>Provides real-time status feedback through a web dashboard.</li>
+                        <li>Logs events with configurable logging levels.</li>
+                        <li>Supports commands via HTTP endpoints for runtime control.</li>
+                        <li>Extensible endpoint system for text and JSON responses.</li>
+                        <li>Scalable to manage up to 1000 services.</li>
+                        <li>Future-ready for health monitoring and secure access.</li>
+                    </ul>
+                </section>
+                <div class="button-container">
+                    <button onclick="showFeatures()">🔧</button>
+                    <button onclick="activateEndpoints()">⚡ Go</button>
+                </div>
+            `;
+            document.querySelector('main').innerHTML = homeContent;
+            document.querySelector('main').style.maxWidth = '800px'; // Reset max-width to 800px
+        }
+
+
+        function activateEndpoints() {
+            window.open('http://localhost:8080/version', '_blank'); // Open in a new tab
+        }
+    </script>
+</head>
+<body>
+
+<header>
+    <h1>WebRunner</h1>
+    <p>The ultimate tool for managing and monitoring local web services</p>
+</header>
+
+<main>
+    <section>
+        <h2>About WebRunner</h2>
+        <p>WebRunner is a scalable and extensible tool for managing, monitoring, and dynamically controlling web services on a local machine.</p>
+    </section>
+
+    <section>
+        <h2>Detailed Description</h2>
+        <p>WebRunner is designed to simplify the management of web services by providing robust features such as dynamic service compilation, runtime control, real-time feedback, and graceful shutdown mechanisms. It reads service configurations from a JSON file, compiles services dynamically, and offers a dashboard for monitoring service status. Scalable to handle up to 1000 services, WebRunner is built for both immediate and future needs, with extensibility for secure access and health monitoring enhancements.</p>
+    </section>
+
+    <section>
+        <h2>Key Features</h2>
+        <ul>
+            <li>Starts and stops predefined and dynamically added web services.</li>
+            <li>Reads configurations from a JSON file for flexible setup.</li>
+            <li>Dynamic service compilation ensures up-to-date binaries.</li>
+            <li>Graceful shutdown with process group management.</li>
+            <li>Provides real-time status feedback through a web dashboard.</li>
+            <li>Logs events with configurable logging levels.</li>
+            <li>Supports commands via HTTP endpoints for runtime control.</li>
+            <li>Extensible endpoint system for text and JSON responses.</li>
+            <li>Scalable to manage up to 1000 services.</li>
+            <li>Future-ready for health monitoring and secure access.</li>
+        </ul>
+    </section>
+
+    <div class="button-container">
+        <button onclick="showFeatures()">🔧</button>
+        <button onclick="activateEndpoints()">⚡ Go</button>
+    </div>
+</main>
+
+<footer>
+    <p>© 2024 WebRunner. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+Runner application:
+
+Please list the features for a runner application that's job is
+to run web services on a local machine
+
+Lets do this step by step -> you ask I answer
+
+At the end you will display the list of features.
